@@ -30,7 +30,7 @@ func (cache *UserCache) Get(ctx context.Context, id int64) (domain.User, error) 
 	// 如果数据不存在,会返回未查找到 key
 	val, err := cache.client.Get(ctx, key).Bytes()
 	if err != nil {
-		return domain.User{}, err
+		return domain.User{}, ErrKeyNotExist
 	}
 	var user domain.User
 	err = json.Unmarshal(val, &user)
