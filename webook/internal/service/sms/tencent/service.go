@@ -11,7 +11,13 @@ import (
 type Service struct {
 	appId    string
 	signName string
+	smsSend  *smsSend
 	client   *sms.Client
+}
+
+type smsSend struct {
+	tpl  string
+	args []string
 }
 
 func NewService(appId string, signName string, client *sms.Client) *Service {
@@ -22,13 +28,22 @@ func NewService(appId string, signName string, client *sms.Client) *Service {
 	}
 }
 
-func (s *Service) Send(ctx context.Context, tpl string, args []string, number []string) error {
+func (s *Service) Ready(tpl string, args []string) *Service {
+	newService := *s
+	newService.smsSend = &smsSend{
+		tpl:  tpl,
+		args: args,
+	}
+	return &newService
+}
+
+func (s *Service) Send(ctx context.Context, target ...string) error {
 	req := sms.NewSendSmsRequest()
 	req.SmsSdkAppId = common.StringPtr(s.appId)
 	req.SignName = common.StringPtr(s.signName)
-	req.TemplateId = common.StringPtr(tpl)
-	req.TemplateParamSet = common.StringPtrs(args)
-	req.PhoneNumberSet = common.StringPtrs(number)
+	req.TemplateId = common.StringPtr(s.smsSend.tpl)
+	req.TemplateParamSet = common.StringPtrs(s.smsSend.args)
+	req.PhoneNumberSet = common.StringPtrs(target)
 
 	resp, err := s.client.SendSms(req)
 	if err != nil {
