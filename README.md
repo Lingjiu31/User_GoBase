@@ -1,4 +1,4 @@
-# WeBook
+# User_GoBase
 
 基于 Go 的用户系统后端服务，实现了邮箱注册登录、手机号/邮箱验证码登录、用户信息管理等核心功能。
 
@@ -45,7 +45,6 @@ webook/
 - **邮箱登录**：JWT 签发与校验，Token 不足 7 天自动续签，比对 User-Agent 防盗用
 - **验证码登录**：支持手机号短信与邮箱两种渠道，Redis + Lua 脚本原子控制发送频率与校验次数
 - **用户信息**：查看与编辑个人资料（昵称、生日、简介），查询时走 Redis 缓存，未命中再查 MySQL
-- **登出**：清除 Session
 
 ## 本地运行
 
@@ -67,7 +66,6 @@ go run cmd/server/mian.go
 |------|------|------|------------|
 | POST | /users/signup | 邮箱注册 | 否 |
 | POST | /users/login | 邮箱登录（JWT） | 否 |
-| POST | /users/logout | 登出 | 是 |
 | POST | /users/edit | 编辑个人信息 | 是 |
 | GET | /users/profile | 查看个人信息 | 是 |
 
